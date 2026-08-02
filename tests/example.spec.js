@@ -65,3 +65,66 @@ test('checkout blocks submission with missing last name', async ({ page }) => {
   const errorText = await page.locator('[data-test="error"]').textContent();
   expect(errorText).toContain('Last Name is required');
 });
+test('remove item from cart updates cart badge', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
+
+  const cartBadge = page.locator('.shopping_cart_badge');
+  await expect(cartBadge).toHaveCount(0);
+});
+
+test('checkout blocks submission with missing postal code', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator('.shopping_cart_link').click();
+  await page.locator('[data-test="checkout"]').click();
+
+  await page.locator('[data-test="firstName"]').fill('Felicia');
+  await page.locator('[data-test="lastName"]').fill('Agbo');
+  await page.locator('[data-test="continue"]').click();
+
+  const errorText = await page.locator('[data-test="error"]').textContent();
+  expect(errorText).toContain('Postal Code is required');
+});
+
+test('adding multiple items updates cart badge count', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click();
+
+  const cartBadge = await page.locator('.shopping_cart_badge').textContent();
+  expect(cartBadge).toBe('2');
+});
+
+test('sort products by price low to high', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+
+  await page.locator('[data-test="product-sort-container"]').selectOption('lohi');
+
+  const firstPrice = await page.locator('.inventory_item_price').first().textContent();
+  expect(firstPrice).toBe('$7.99');
+});
+
+test('checkout blocks submission with all fields empty', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator('.shopping_cart_link').click();
+  await page.locator('[data-test="checkout"]').click();
+
+  await page.locator('[data-test="continue"]').click();
+
+  const errorText = await page.locator('[data-test="error"]').textContent();
+  expect(errorText).toContain('First Name is required');
+});
+
+test('logout returns to login page', async ({ page }) => {
+  await login(page, 'standard_user', 'secret_sauce');
+
+  await page.locator('#react-burger-menu-btn').click();
+  await page.locator('#logout_sidebar_link').click();
+
+  await expect(page).toHaveURL('https://www.saucedemo.com/');
+});

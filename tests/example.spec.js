@@ -1,45 +1,53 @@
 const { test, expect } = require('@playwright/test');
-async function login(page, username, password) {
-  await page.goto('https://www.saucedemo.com');
-  await page.locator('#user-name').fill(username);
-  await page.locator('#password').fill(password);
-  await page.locator('#login-button').click();
-}
+const { LoginPage } = require('../pages/LoginPage');
 
-test('valid login redirects to inventory page', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
-
-  await expect(page).toHaveURL(/inventory.html/);
-});
-
-test('invalid login shows error message', async ({ page }) => {
-  await login(page, 'wrong_user', 'wrong_password');
-
-  const errorText = await page.locator('[data-test="error"]').textContent();
-  expect(errorText).toContain('Username and password do not match');
-});
-test('locked out user cannot log in', async ({ page }) => {
-  await login(page, 'locked_out_user', 'secret_sauce');
-
-  const currentUrl = page.url();
-  expect(currentUrl === 'https://www.saucedemo.com/').toBe(true);
-});
-test('add item to cart updates cart badge', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
-
-  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-  const cartBadge = await page.locator('.shopping_cart_badge').textContent();
-
-  expect(cartBadge).toBe('1');
-});
 const checkoutInfo = {
   firstName: 'Felicia',
   lastName: 'Agbo',
   postalCode: '900001',
 };
 
+test('valid login redirects to inventory page', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
+
+  await expect(page).toHaveURL(/inventory.html/);
+});
+
+test('invalid login shows error message', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('wrong_user', 'wrong_password');
+
+  const errorText = await loginPage.getErrorText();
+  expect(errorText).toContain('Username and password do not match');
+});
+
+test('locked out user cannot log in', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('locked_out_user', 'secret_sauce');
+
+  const currentUrl = page.url();
+  expect(currentUrl === 'https://www.saucedemo.com/').toBe(true);
+});
+
+test('add item to cart updates cart badge', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
+
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  const cartBadge = await page.locator('.shopping_cart_badge').textContent();
+
+  expect(cartBadge).toBe('1');
+});
+
 test('checkout with valid info succeeds', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('.shopping_cart_link').click();
@@ -52,8 +60,12 @@ test('checkout with valid info succeeds', async ({ page }) => {
 
   await expect(page.locator('.summary_info')).toBeVisible();
 });
+
 test('checkout blocks submission with missing last name', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
+
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('.shopping_cart_link').click();
   await page.locator('[data-test="checkout"]').click();
@@ -65,8 +77,11 @@ test('checkout blocks submission with missing last name', async ({ page }) => {
   const errorText = await page.locator('[data-test="error"]').textContent();
   expect(errorText).toContain('Last Name is required');
 });
+
 test('remove item from cart updates cart badge', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
@@ -76,7 +91,10 @@ test('remove item from cart updates cart badge', async ({ page }) => {
 });
 
 test('checkout blocks submission with missing postal code', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
+
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('.shopping_cart_link').click();
   await page.locator('[data-test="checkout"]').click();
@@ -90,7 +108,9 @@ test('checkout blocks submission with missing postal code', async ({ page }) => 
 });
 
 test('adding multiple items updates cart badge count', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click();
@@ -100,7 +120,9 @@ test('adding multiple items updates cart badge count', async ({ page }) => {
 });
 
 test('sort products by price low to high', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
 
   await page.locator('[data-test="product-sort-container"]').selectOption('lohi');
 
@@ -109,7 +131,10 @@ test('sort products by price low to high', async ({ page }) => {
 });
 
 test('checkout blocks submission with all fields empty', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
+
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('.shopping_cart_link').click();
   await page.locator('[data-test="checkout"]').click();
@@ -121,7 +146,9 @@ test('checkout blocks submission with all fields empty', async ({ page }) => {
 });
 
 test('logout returns to login page', async ({ page }) => {
-  await login(page, 'standard_user', 'secret_sauce');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('standard_user', 'secret_sauce');
 
   await page.locator('#react-burger-menu-btn').click();
   await page.locator('#logout_sidebar_link').click();

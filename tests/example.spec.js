@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+require('dotenv').config();
 const { LoginPage } = require('../pages/LoginPage');
 const { InventoryPage } = require('../pages/InventoryPage');
 const { CheckoutPage } = require('../pages/CheckoutPage');
@@ -6,7 +7,7 @@ const { CheckoutPage } = require('../pages/CheckoutPage');
 test('valid login redirects to inventory page', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   await expect(page).toHaveURL(/inventory.html/);
 });
@@ -23,7 +24,7 @@ test('invalid login shows error message', async ({ page }) => {
 test('locked out user cannot log in', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('locked_out_user', 'secret_sauce');
+  await loginPage.login('locked_out_user', process.env.SAUCE_PASSWORD);
 
   const currentUrl = page.url();
   expect(currentUrl === 'https://www.saucedemo.com/').toBe(true);
@@ -32,7 +33,7 @@ test('locked out user cannot log in', async ({ page }) => {
 test('add item to cart updates cart badge', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -44,7 +45,7 @@ test('add item to cart updates cart badge', async ({ page }) => {
 test('checkout with valid info succeeds', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -60,7 +61,7 @@ test('checkout with valid info succeeds', async ({ page }) => {
 test('checkout blocks submission with missing last name', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -77,7 +78,7 @@ test('checkout blocks submission with missing last name', async ({ page }) => {
 test('remove item from cart updates cart badge', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -89,7 +90,7 @@ test('remove item from cart updates cart badge', async ({ page }) => {
 test('checkout blocks submission with missing postal code', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -106,7 +107,7 @@ test('checkout blocks submission with missing postal code', async ({ page }) => 
 test('adding multiple items updates cart badge count', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -119,7 +120,7 @@ test('adding multiple items updates cart badge count', async ({ page }) => {
 test('sort products by price low to high', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.sortByPriceLowToHigh();
@@ -131,7 +132,7 @@ test('sort products by price low to high', async ({ page }) => {
 test('checkout blocks submission with all fields empty', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   const inventoryPage = new InventoryPage(page);
   await inventoryPage.addToCart('sauce-labs-backpack');
@@ -148,7 +149,7 @@ test('checkout blocks submission with all fields empty', async ({ page }) => {
 test('logout returns to login page', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  await loginPage.login(process.env.SAUCE_USERNAME, process.env.SAUCE_PASSWORD);
 
   await page.locator('#react-burger-menu-btn').click();
   await page.locator('#logout_sidebar_link').click();

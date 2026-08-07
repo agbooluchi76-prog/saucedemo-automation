@@ -8,6 +8,8 @@ class CheckoutPage {
     this.continueButton = page.locator('[data-test="continue"]');
     this.errorMessage = page.locator('[data-test="error"]');
     this.summaryInfo = page.locator('.summary_info');
+    this.cancelButton = page.locator('[data-test="cancel"]');
+    this.cartQuantity = page.locator('.cart_quantity');
   }
 
   async startCheckout() {
@@ -23,6 +25,10 @@ class CheckoutPage {
 
   async getErrorText() {
     return await this.errorMessage.textContent();
+  }
+
+  async cancel() {
+    await this.cancelButton.click();
   }
 }
 

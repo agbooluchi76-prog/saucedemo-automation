@@ -30,6 +30,26 @@ class InventoryPage {
   async getFirstItemPrice() {
     return await this.itemPrices.first().textContent();
   }
+
+  async sortByPriceHighToLow() {
+    await this.sortDropdown.selectOption('hilo');
+  }
+
+  async sortByNameAZ() {
+    await this.sortDropdown.selectOption('az');
+  }
+
+  async sortByNameZA() {
+    await this.sortDropdown.selectOption('za');
+  }
+
+  async getFirstItemName() {
+    return await this.page.locator('.inventory_item_name').first().textContent();
+  }
+
+  async getCartItemName() {
+    return await this.page.locator('.cart_item .inventory_item_name').first().textContent();
+  }
 }
 
-module.exports = { InventoryPage };
+module.exports = { InventoryPage }

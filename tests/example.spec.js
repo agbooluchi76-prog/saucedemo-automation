@@ -196,3 +196,4 @@ test('checkout overview page shows correct item and quantity', async ({ loggedIn
   const quantity = await checkoutPage.cartQuantity.textContent();
   expect(quantity).toBe('1');
 });
+ 

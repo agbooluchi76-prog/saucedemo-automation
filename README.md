@@ -79,6 +79,16 @@ npx playwright show-report
 
 Left the setup script in the repo as a working example of the technique, documented here rather than removed silently. The `loggedInPage` fixture is the approach actually used across the suite.
 
+## A Note on the Logout Test
+
+The logout test occasionally failed waiting for the sidebar menu's logout
+link to become visible, inconsistently across WebKit and Firefox. Added an
+explicit `waitFor({ state: 'visible' })` before the click to wait for the
+menu's animation to finish rather than clicking blindly. After the fix, the
+full suite has passed cleanly on repeated runs, though the original failures
+were likely a mix of animation timing and an unstable network connection
+during test execution.
+
 ## Test Results
 
 ![Playwright test report part 1](./screenshots/test-report-1.png)

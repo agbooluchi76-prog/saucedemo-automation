@@ -115,7 +115,9 @@ test('checkout blocks submission with all fields empty', async ({ loggedInPage }
 
 test('logout returns to login page', async ({ loggedInPage }) => {
   await loggedInPage.locator('#react-burger-menu-btn').click();
-  await loggedInPage.locator('#logout_sidebar_link').click();
+  const logoutLink = loggedInPage.locator('#logout_sidebar_link');
+  await logoutLink.waitFor({ state: 'visible' });
+  await logoutLink.click();
 
   await expect(loggedInPage).toHaveURL('https://www.saucedemo.com/');
 });

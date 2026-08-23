@@ -79,6 +79,20 @@ npx playwright show-report
 
 Left the setup script in the repo as a working example of the technique, documented here rather than removed silently. The `loggedInPage` fixture is the approach actually used across the suite.
 
+## Test Results
+
+![Playwright test report part 1](./screenshots/test-report-1.png)
+![Playwright test report part 2](./screenshots/test-report-2.png)
+
+20 automated test cases, 60 test runs across Chromium, Firefox, and WebKit. Full suite passes consistently, with one known intermittent WebKit logout flake tied to menu animation timing (see notes above).
+
+## What I Learned
+
+- Converting manual test cases into automated scripts forced me to think about timing and waits in a way manual testing never required.
+- Page Object Model made a real difference once the suite passed 10+ tests, not before. Refactoring mid-build taught me why teams enforce this pattern early.
+- Attempting `storageState` and having it fail for a specific reason (Sauce Demo uses `sessionStorage`, which `storageState` doesn't persist) taught me more than if it had worked on the first try.
+- Moving hardcoded URLs into `baseURL` and `.env` seemed like a small change, but it's the difference between a script and something closer to a real framework.
+
 ## Author
 
 Felicia Agbo — [LinkedIn](https://linkedin.com/in/agbo-felicia03) · [GitHub](https://github.com/agbooluchi76-prog)

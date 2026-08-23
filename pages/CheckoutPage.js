@@ -12,10 +12,20 @@ class CheckoutPage {
     this.cartQuantity = page.locator('.cart_quantity');
   }
 
+  /**
+   * Starts the checkout flow from the cart page.
+   */
   async startCheckout() {
     await this.checkoutButton.click();
   }
 
+  /**
+   * Fills in checkout info and submits. Empty strings are skipped,
+   * allowing tests to simulate missing-field validation errors.
+   * @param {string} firstName
+   * @param {string} lastName
+   * @param {string} postalCode
+   */
   async fillInfo(firstName, lastName, postalCode) {
     if (firstName) await this.firstNameInput.fill(firstName);
     if (lastName) await this.lastNameInput.fill(lastName);
@@ -23,10 +33,17 @@ class CheckoutPage {
     await this.continueButton.click();
   }
 
+  /**
+   * Reads the visible checkout validation error message.
+   * @returns {Promise<string>} the error message shown on screen
+   */
   async getErrorText() {
     return await this.errorMessage.textContent();
   }
 
+  /**
+   * Cancels checkout and returns to the previous page.
+   */
   async cancel() {
     await this.cancelButton.click();
   }

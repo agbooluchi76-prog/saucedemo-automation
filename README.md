@@ -17,7 +17,7 @@ This suite translates my earlier [manual test cases](https://github.com/agbooluc
 ## Project Structure
 saucedemo-automation/
 ├── tests/
-│ └── example.spec.js # all 20 test cases
+│ └── saucedemo.spec.js # all 20 test cases
 ├── pages/
 │ ├── LoginPage.js
 │ ├── InventoryPage.js

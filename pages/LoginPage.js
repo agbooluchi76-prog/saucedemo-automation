@@ -8,8 +8,8 @@ class LoginPage {
   }
 
   async goto() {
-    await this.page.goto('https://www.saucedemo.com');
-  }
+  await this.page.goto('/');
+}
 
   async login(username, password) {
     await this.usernameInput.fill(username);

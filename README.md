@@ -1,6 +1,7 @@
 # Sauce Demo – Playwright Test Suite
 
 ![Playwright Tests](https://img.shields.io/badge/Playwright%20Tests-passing-brightgreen)
+![CI](https://github.com/agbooluchi76-prog/saucedemo-automation/actions/workflows/playwright.yml/badge.svg)
 
 Automated end-to-end test suite for [saucedemo.com](https://www.saucedemo.com), a QA testing demo application, built with **Playwright** and **JavaScript** using the **Page Object Model (POM)** pattern.
 
